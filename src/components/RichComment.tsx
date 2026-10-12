@@ -115,7 +115,7 @@ function ImagePreview({ src, index, allImages }: { src: string; index: number; a
       <img
         src={src}
         alt={`Прикреплённое изображение ${index + 1}`}
-        className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-shadow hover:shadow-md"
+        className="w-14 h-14 object-cover rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-shadow hover:shadow-md"
       />
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-lg transition-colors flex items-center justify-center">
         <span className="text-white opacity-0 group-hover:opacity-100 text-lg">🔍</span>
@@ -230,7 +230,7 @@ interface ImageInputProps {
   maxSizeMB?: number;
 }
 
-export function ImageInput({ images, onChange, maxImages = 10, maxSizeMB = 5 }: ImageInputProps) {
+export function ImageInput({ images, onChange, maxImages = 20, maxSizeMB = 12 }: ImageInputProps) {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -252,8 +252,8 @@ export function ImageInput({ images, onChange, maxImages = 10, maxSizeMB = 5 }: 
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        // Сжимаем изображение перед сохранением
-        compressImage(result, 1200, 0.8).then(compressed => {
+        // Сжимаем изображение перед сохранением: до 1000 px по большей стороне, JPEG q=0.78
+        compressImage(result, 1000, 0.78).then(compressed => {
           onChange([...images, compressed]);
         });
       };
@@ -311,20 +311,22 @@ export function ImageInput({ images, onChange, maxImages = 10, maxSizeMB = 5 }: 
   );
 }
 
-// Сжатие изображения
-function compressImage(dataUrl: string, maxWidth: number, quality: number): Promise<string> {
+// Сжатие изображения: ограничивает БОЛЬШУЮ сторону до maxSize px, JPEG заданного качества
+function compressImage(dataUrl: string, maxSize: number, quality: number): Promise<string> {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
       let width = img.width;
       let height = img.height;
 
-      if (width > maxWidth) {
-        height = Math.round((height * maxWidth) / width);
-        width = maxWidth;
+      const larger = Math.max(width, height);
+      if (larger > maxSize) {
+        const scale = maxSize / larger;
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
       }
 
+      const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
@@ -333,7 +335,11 @@ function compressImage(dataUrl: string, maxWidth: number, quality: number): Prom
         return;
       }
       ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', quality));
+      try {
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch {
+        resolve(dataUrl);
+      }
     };
     img.onerror = () => resolve(dataUrl);
     img.src = dataUrl;
