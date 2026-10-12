@@ -19,6 +19,7 @@ export interface Client {
   website: string;
   bankDetails: string;
   comment: string;
+  images: string[]; // base64 data URLs
   status: 'active' | 'archived';
   additionalContacts: AdditionalContact[];
   createdAt: string;
@@ -35,6 +36,7 @@ export interface Activity {
   type: ActivityType;
   subject: string;
   comment: string;
+  images: string[]; // base64 data URLs
   status: ActivityStatus;
   createdAt: string;
   postponedUntil?: string; // ISO timestamp

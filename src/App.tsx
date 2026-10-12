@@ -3,6 +3,7 @@ import { CRMData, Client, Activity, TabType, ActivityFilter, ActivityType, Addit
 import { ACTIVITY_TYPE_LABELS } from './types';
 import { loadData, saveData, exportJSON, importJSON } from './utils/storage';
 import { serializeToCSV, parseCSV, generateId } from './utils/csv';
+import { RichComment, RichCommentInput, ImageInput } from './components/RichComment';
 
 // Error Boundary
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
@@ -273,11 +274,11 @@ function App() {
     setEditingActivity(null);
   };
 
-  const completeActivity = (id: string, comment?: string) => {
+  const completeActivity = (id: string, comment?: string, images?: string[]) => {
     setData(prev => ({
       ...prev,
       activities: prev.activities.map(a =>
-        a.id === id ? { ...a, status: 'done' as const, comment: comment || a.comment, postponedUntil: undefined } : a
+        a.id === id ? { ...a, status: 'done' as const, comment: comment || a.comment, images: images || a.images, postponedUntil: undefined } : a
       ),
     }));
     setReminderActivities(prev => prev.filter(a => a.id !== id));
@@ -318,10 +319,10 @@ function App() {
     }));
   };
 
-  const completeAndNext = (id: string, comment?: string) => {
+  const completeAndNext = (id: string, comment?: string, images?: string[]) => {
     const activity = data.activities.find(a => a.id === id);
     if (!activity) return;
-    completeActivity(id, comment);
+    completeActivity(id, comment, images);
     setPreselectedClientId(activity.clientId);
     setEditingActivity(null);
     setShowActivityForm(true);
@@ -553,14 +554,14 @@ function App() {
           activity={currentReminder}
           clientName={getClientName(currentReminder.clientId)}
           clientPhone={getClientPhone(currentReminder.clientId)}
-          onComplete={(comment) => completeActivity(currentReminder.id, comment)}
-          onCompleteAndNext={(comment) => completeAndNext(currentReminder.id, comment)}
+          onComplete={(comment, images) => completeActivity(currentReminder.id, comment, images)}
+          onCompleteAndNext={(comment, images) => completeAndNext(currentReminder.id, comment, images)}
           onPostpone15={() => postponeActivity(currentReminder.id, 15)}
           onPostpone10={() => postponeActivity(currentReminder.id, 10)}
-          onSaveComment={(comment) => {
+          onSaveComment={(comment, images) => {
             setData(prev => ({
               ...prev,
-              activities: prev.activities.map(a => a.id === currentReminder.id ? { ...a, comment } : a),
+              activities: prev.activities.map(a => a.id === currentReminder.id ? { ...a, comment, images } : a),
             }));
           }}
           onClose={() => {
@@ -782,6 +783,7 @@ function ClientForm({ client, onSave, onClose }: { client: Client | null; onSave
     website: '',
     bankDetails: '',
     comment: '',
+    images: [],
     status: 'active',
     additionalContacts: [],
     createdAt: new Date().toISOString(),
@@ -865,7 +867,14 @@ function ClientForm({ client, onSave, onClose }: { client: Client | null; onSave
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Комментарий</label>
-          <textarea value={form.comment} onChange={e => setForm(p => ({ ...p, comment: e.target.value }))} rows={3} className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500" />
+          <RichCommentInput
+            value={form.comment}
+            onChange={(val) => setForm(p => ({ ...p, comment: val }))}
+            images={form.images}
+            onImagesChange={(imgs) => setForm(p => ({ ...p, images: imgs }))}
+            placeholder="Комментарий по работе с клиентом... (ссылки станут кликабельными)"
+            rows={3}
+          />
         </div>
 
         {/* Additional contacts */}
@@ -958,10 +967,12 @@ function ClientDetail({ client, data, onClose, onEdit, onArchive, onRestore }: {
         </div>
       )}
 
-      {client.comment && (
+      {(client.comment || (client.images && client.images.length > 0)) && (
         <div className="mb-6">
           <h4 className="font-medium text-gray-700 mb-1">Комментарий:</h4>
-          <div className="text-sm bg-yellow-50 rounded p-3 whitespace-pre-wrap">{client.comment}</div>
+          <div className="text-sm bg-yellow-50 rounded p-3">
+            <RichComment text={client.comment} images={client.images} />
+          </div>
         </div>
       )}
 
@@ -972,16 +983,25 @@ function ClientDetail({ client, data, onClose, onEdit, onArchive, onRestore }: {
         ) : (
           <div className="space-y-1">
             {clientActivities.map(a => (
-              <div key={a.id} className={`text-sm p-2 rounded flex items-center gap-2 ${
+              <div key={a.id} className={`text-sm p-2 rounded ${
                 a.status === 'done' ? 'bg-green-50' : 'bg-blue-50'
               }`}>
-                <span className="font-mono text-xs">{a.date} {a.time || '09:00'}</span>
-                <span>{ACTIVITY_TYPE_LABELS[a.type]}</span>
-                <span className="font-medium">{a.subject}</span>
-                <span className={`text-xs px-1 rounded ${a.status === 'done' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}`}>
-                  {a.status === 'done' ? '✅' : '⏳'}
-                </span>
-                {a.comment && <span className="text-xs text-gray-500 truncate max-w-[200px]">— {a.comment}</span>}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono text-xs">{a.date} {a.time || '09:00'}</span>
+                  <span>{ACTIVITY_TYPE_LABELS[a.type]}</span>
+                  <span className="font-medium">{a.subject}</span>
+                  <span className={`text-xs px-1 rounded ${a.status === 'done' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}`}>
+                    {a.status === 'done' ? '✅' : '⏳'}
+                  </span>
+                  {a.images && a.images.length > 0 && (
+                    <span className="text-xs text-gray-500">📷 {a.images.length}</span>
+                  )}
+                </div>
+                {(a.comment || (a.images && a.images.length > 0)) && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    <RichComment text={a.comment} images={a.images} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -1073,7 +1093,11 @@ function ActivitiesView({ activities, filter, onFilterChange, clients, onNewActi
                     {isHot && <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded animate-pulse">🔥 Скоро</span>}
                     {a.status === 'done' && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">✅</span>}
                   </div>
-                  {a.comment && <div className="text-xs text-gray-500 mt-1 truncate">{a.comment}</div>}
+                  {(a.comment || (a.images && a.images.length > 0)) && (
+                    <div className="text-xs text-gray-500 mt-1 max-w-md overflow-hidden">
+                      <RichComment text={a.comment} images={a.images} />
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-1 ml-2">
                   {a.status === 'planned' && (
@@ -1119,6 +1143,7 @@ function ActivityForm({ activity, clients, onSave, onClose, preselectedClientId 
     type: 'call',
     subject: '',
     comment: '',
+    images: [],
     status: 'planned',
     createdAt: new Date().toISOString(),
   });
@@ -1201,11 +1226,13 @@ function ActivityForm({ activity, clients, onSave, onClose, preselectedClientId 
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Комментарий</label>
-          <textarea
+          <RichCommentInput
             value={form.comment}
-            onChange={e => setForm(p => ({ ...p, comment: e.target.value }))}
+            onChange={(val) => setForm(p => ({ ...p, comment: val }))}
+            images={form.images}
+            onImagesChange={(imgs) => setForm(p => ({ ...p, images: imgs }))}
+            placeholder="Подробности активности... (ссылки станут кликабельными)"
             rows={3}
-            className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="flex gap-2 pt-4">
@@ -1226,14 +1253,15 @@ function ReminderModal({ activity, clientName, clientPhone, onComplete, onComple
   activity: Activity;
   clientName: string;
   clientPhone: string;
-  onComplete: (comment: string) => void;
-  onCompleteAndNext: (comment: string) => void;
+  onComplete: (comment: string, images: string[]) => void;
+  onCompleteAndNext: (comment: string, images: string[]) => void;
   onPostpone15: () => void;
   onPostpone10: () => void;
-  onSaveComment: (comment: string) => void;
+  onSaveComment: (comment: string, images: string[]) => void;
   onClose: () => void;
 }) {
   const [comment, setComment] = useState(activity.comment || '');
+  const [images, setImages] = useState<string[]>(activity.images || []);
   const [copied, setCopied] = useState(false);
 
   const copyPhone = () => {
@@ -1243,9 +1271,9 @@ function ReminderModal({ activity, clientName, clientPhone, onComplete, onComple
     });
   };
 
-  const handleComplete = () => onComplete(comment);
-  const handleCompleteAndNext = () => onCompleteAndNext(comment);
-  const handleSaveComment = () => onSaveComment(comment);
+  const handleComplete = () => onComplete(comment, images);
+  const handleCompleteAndNext = () => onCompleteAndNext(comment, images);
+  const handleSaveComment = () => onSaveComment(comment, images);
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1287,14 +1315,23 @@ function ReminderModal({ activity, clientName, clientPhone, onComplete, onComple
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Комментарий по звонку</label>
-            <textarea
+            <RichCommentInput
               value={comment}
-              onChange={e => setComment(e.target.value)}
+              onChange={setComment}
+              images={images}
+              onImagesChange={setImages}
+              placeholder="Результат звонка, договорённости... (можно прикрепить изображения)"
               rows={3}
-              className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500"
-              placeholder="Результат звонка, договорённости..."
             />
           </div>
+          
+          {/* Показать существующий комментарий с изображениями */}
+          {activity.comment && activity.comment !== comment && (
+            <div className="bg-gray-50 rounded p-2 text-xs">
+              <span className="text-gray-500">Предыдущий комментарий:</span>
+              <RichComment text={activity.comment} images={activity.images} />
+            </div>
+          )}
 
           <div className="space-y-2">
             <div className="flex gap-2 flex-wrap">
