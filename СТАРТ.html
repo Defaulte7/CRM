@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-CRM — Быстрый старт</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step-content {
+            color: #666;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        .warning-content {
+            color: #856404;
+            font-size: 14px;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .info-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 5px;
+        }
+        .info-content {
+            color: #0c5460;
+            font-size: 14px;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Мини-CRM</h1>
+        <p class="subtitle">Быстрый старт — 3 простых шага</p>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Установите браузер
+            </div>
+            <div class="step-content">
+                Вам нужен <strong>Google Chrome</strong> или <strong>Microsoft Edge</strong> (оба бесплатные).
+                <br><br>
+                <a href="https://www.google.com/chrome/" target="_blank" class="button" style="padding: 10px 20px; font-size: 14px; margin-right: 10px;">
+                    🌐 Скачать Chrome
+                </a>
+                <a href="https://www.microsoft.com/edge" target="_blank" class="button" style="padding: 10px 20px; font-size: 14px;">
+                    🌐 Скачать Edge
+                </a>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Откройте программу
+            </div>
+            <div class="step-content">
+                Найдите файл <code>dist/index.html</code> и откройте его двойным кликом.
+                <br><br>
+                Или используйте файл <code>Запустить-Мини-CRM.bat</code> для автоматического запуска.
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Создайте базу данных
+            </div>
+            <div class="step-content">
+                В шапке программы нажмите кнопку <strong>"📄 Создать базу"</strong>.
+                <br><br>
+                Выберите папку и имя файла (например, <code>crm_database.csv</code>).
+                <br><br>
+                Готово! Теперь можно добавлять клиентов и активности.
+            </div>
+        </div>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Важно</div>
+            <div class="warning-content">
+                • Программа работает <strong>полностью офлайн</strong> — интернет не нужен<br>
+                • Все данные сохраняются в CSV-файл автоматически<br>
+                • CSV можно открыть в Excel для просмотра и редактирования<br>
+                • Делайте резервные копии (кнопка "💾 JSON" в шапке)
+            </div>
+        </div>
+
+        <div class="info">
+            <div class="info-title">💡 Подсказка</div>
+            <div class="info-content">
+                Если у вас возникли проблемы, прочитайте файл <code>ИНСТРУКЦИЯ.md</code> или <code>ЧТО_НУЖНО_ДЛЯ_ЗАПУСКА.txt</code>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="dist/index.html" class="button">
+                🚀 Открыть Мини-CRM
+            </a>
+        </div>
+
+        <div class="footer">
+            Мини-CRM v2.0 — Работает на Windows с Chrome/Edge
+        </div>
+    </div>
+</body>
+</html>
