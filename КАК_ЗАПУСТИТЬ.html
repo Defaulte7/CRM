@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-CRM - Как запустить</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+        .step h3 {
+            display: inline-block;
+            color: #333;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .step p {
+            color: #666;
+            line-height: 1.8;
+            margin-left: 55px;
+        }
+        .step .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .warning h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .warning p {
+            color: #856404;
+            line-height: 1.6;
+        }
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .success h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        .success p {
+            color: #155724;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 20px 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        .download-section {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .download-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .browser-logos {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .browser {
+            text-align: center;
+        }
+        .browser-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .browser-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Мини-CRM</h1>
+            <p>Инструкция по запуску программы</p>
+        </div>
+
+        <div class="content">
+            <div class="warning">
+                <h3>⚠️ Важно! Что нужно для запуска:</h3>
+                <p><strong>Google Chrome</strong> или <strong>Microsoft Edge</strong> (любой из них)</p>
+                <p>Другие браузеры (Firefox, Opera, Яндекс) <strong>не поддерживаются</strong>!</p>
+            </div>
+
+            <div class="download-section">
+                <h3>📥 Шаг 0: Скачайте браузер</h3>
+                <div class="browser-logos">
+                    <div class="browser">
+                        <div class="browser-icon">🌐</div>
+                        <div class="browser-name">Google Chrome</div>
+                        <a href="https://www.google.com/chrome/" target="_blank" class="button">Скачать Chrome</a>
+                    </div>
+                    <div class="browser">
+                        <div class="browser-icon">🔷</div>
+                        <div class="browser-name">Microsoft Edge</div>
+                        <a href="https://www.microsoft.com/edge" target="_blank" class="button">Скачать Edge</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <h3>Найдите файл запуска</h3>
+                <p>В папке с программой найдите файл <code>Запустить-Мини-CRM.bat</code></p>
+                <p><span class="emoji">📁</span> Это обычный файл с иконкой Windows</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <h3>Запустите программу</h3>
+                <p><span class="emoji">🖱️</span> <strong>Дважды кликните</strong> по файлу <code>Запустить-Мини-CRM.bat</code></p>
+                <p>Программа автоматически откроется в Chrome или Edge</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <h3>Создайте базу данных</h3>
+                <p><span class="emoji">📄</span> В шапке программы нажмите кнопку <strong>"📄 Создать базу"</strong></p>
+                <p><span class="emoji">💾</span> Выберите место для файла (например, <code>Документы</code>)</p>
+                <p><span class="emoji">✏️</span> Введите имя: <code>crm_database.csv</code></p>
+                <p><span class="emoji">✅</span> Нажмите "Сохранить"</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <h3>Проверьте статус</h3>
+                <p>В шапке должен появиться <strong>зелёный бейдж</strong>:</p>
+                <p style="background: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0; display: inline-block;">
+                    ✅ crm_database.csv (14:32:05)
+                </p>
+                <p>Это значит, что база данных подключена и работает!</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">5</span>
+                <h3>Начните работу!</h3>
+                <p><span class="emoji">👥</span> Перейдите на вкладку <strong>"Клиенты"</strong></p>
+                <p><span class="emoji">➕</span> Нажмите <strong>"+ Новый клиент"</strong></p>
+                <p><span class="emoji">📝</span> Заполните данные и сохраните</p>
+                <p><span class="emoji">🎉</span> Готово! Данные автоматически сохраняются в CSV-файл</p>
+            </div>
+
+            <div class="success">
+                <h3>✅ Всё готово!</h3>
+                <p>Теперь вы можете:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Добавлять клиентов и контакты</li>
+                    <li>Создавать активности (звонки, встречи)</li>
+                    <li>Получать напоминания о звонках</li>
+                    <li>Открывать CSV-файл в Excel для отчётов</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h3>🆘 Если что-то не работает:</h3>
+                <p><strong>Проблема:</strong> Файл не открывается</p>
+                <p><strong>Решение:</strong> Установите Google Chrome или Microsoft Edge</p>
+                <br>
+                <p><strong>Проблема:</strong> Кнопка "Создать базу" не работает</p>
+                <p><strong>Решение:</strong> Обновите браузер до последней версии</p>
+                <br>
+                <p><strong>Проблема:</strong> Белый экран или ошибка</p>
+                <p><strong>Решение:</strong> Нажмите F12, посмотрите консоль, сделайте скриншот</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="dist/index.html" class="button" style="font-size: 1.3em; padding: 20px 50px;">
+                    🚀 Открыть программу сейчас
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Мини-CRM v2.0</strong></p>
+            <p>Работает полностью офлайн • Данные хранятся на вашем компьютере</p>
+            <p style="margin-top: 10px;">Нужна помощь? Проверьте файл <code>ИНСТРУКЦИЯ.md</code></p>
+        </div>
+    </div>
+</body>
+</html>
