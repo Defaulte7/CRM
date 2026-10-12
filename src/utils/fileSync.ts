@@ -28,6 +28,14 @@ export class FileSyncEngine {
   private isWriting: boolean = false;
   private isReading: boolean = false;
   private pendingWrite: boolean = false;
+  private state: FileSyncState = {
+    status: 'disconnected',
+    fileName: '',
+    lastSync: '',
+    lastError: '',
+    fileLastModified: 0,
+    pendingWrites: 0,
+  };
   private onChange: ((state: FileSyncState) => void) | null = null;
   private onDataUpdate: ((data: CRMData) => void) | null = null;
   private debounceMs: number = 1200;
@@ -50,14 +58,7 @@ export class FileSyncEngine {
   }
 
   getState(): FileSyncState {
-    return {
-      status: this.fileHandle ? (this.isWriting ? 'syncing' : 'connected') : 'disconnected',
-      fileName: this.fileHandle?.name || '',
-      lastSync: this.lastFileModified ? new Date(this.lastFileModified).toLocaleTimeString('ru-RU') : '',
-      lastError: '',
-      fileLastModified: this.lastFileModified,
-      pendingWrites: this.pendingWrite ? 1 : 0,
-    };
+    return this.state;
   }
 
   /** Создать новый CSV файл на диске */
@@ -274,15 +275,16 @@ export class FileSyncEngine {
   }
 
   private emitChange(status: SyncStatus, error: string = '') {
+    this.state = {
+      status,
+      fileName: this.fileHandle?.name || '',
+      lastSync: this.lastFileModified ? new Date(this.lastFileModified).toLocaleTimeString('ru-RU') : '',
+      lastError: error,
+      fileLastModified: this.lastFileModified,
+      pendingWrites: this.pendingWrite ? 1 : 0,
+    };
     if (this.onChange) {
-      this.onChange({
-        status,
-        fileName: this.fileHandle?.name || '',
-        lastSync: this.lastFileModified ? new Date(this.lastFileModified).toLocaleTimeString('ru-RU') : '',
-        lastError: error,
-        fileLastModified: this.lastFileModified,
-        pendingWrites: this.pendingWrite ? 1 : 0,
-      });
+      this.onChange(this.state);
     }
   }
 }
